@@ -1,5 +1,6 @@
-// Discord Webhook URL
+// Discord Webhook URLs
 const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1456613398044344463/OVomRV3lZHDi6T_yg3qOJj4FMx755Miprb7SZsqTQmWob2nyXn32AuDjOe4Dcnjiblyi';
+const BILLBOARD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1458080618976903412/NXuNd2tNOUtIZ4CtniTmDH-xIKI1_ALuy-bsPMBr4wqB4jhskRWAN4sr4q4sxE5xYREV'; // Replace with the actual Billboard webhook URL
 
 let uploadedImageFile = null;
 
@@ -90,7 +91,7 @@ async function submitAdvertisement(e) {
     };
 
     // Send to Discord with timeout
-    const discordSent = await sendToDiscordWithTimeout(application, 30000); // 30 second timeout
+    const discordSent = await sendToDiscordWithTimeout(application, DISCORD_WEBHOOK_URL, 30000); // 30 second timeout
 
     if (discordSent) {
         showMessage('success', `✅ Application ${application.id} submitted successfully! We will contact you within 24 hours.`);
@@ -161,7 +162,7 @@ async function submitBillboardAdvertisement(e) {
         time: new Date().toLocaleTimeString()
     };
 
-    const discordSent = await sendToDiscordWithTimeout(application, 30000);
+    const discordSent = await sendToDiscordWithTimeout(application, BILLBOARD_WEBHOOK_URL, 30000);
 
     if (discordSent) {
         showMessage('success', `✅ Billboard Application ${application.id} submitted successfully!`);
@@ -266,9 +267,9 @@ function checkBillboardState() {
 }
 
 
-async function sendToDiscordWithTimeout(app, timeout) {
+async function sendToDiscordWithTimeout(app, webhookUrl, timeout) {
     return Promise.race([
-        sendToDiscord(app),
+        sendToDiscord(app, webhookUrl),
         new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Upload timeout')), timeout)
         )
@@ -278,7 +279,9 @@ async function sendToDiscordWithTimeout(app, timeout) {
     });
 }
 
-async function sendToDiscord(app) {
+async function sendToDiscord(app, webhookUrl) {
+    console.log(`Sending ${app.type} application to Discord...`);
+    console.log(`Using Webhook URL: ${webhookUrl}`);
     const currentYear = new Date().getFullYear();
 
     const embed = {
@@ -333,7 +336,7 @@ async function sendToDiscord(app) {
             formData.append('file', app.imageFile, 'ad_design.png');
         }
 
-        const response = await fetch(DISCORD_WEBHOOK_URL, {
+        const response = await fetch(webhookUrl, {
             method: 'POST',
             body: formData
         });
