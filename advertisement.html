@@ -87,28 +87,55 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Business Name <span class="required">*</span></label>
-                        <select id="businessName" required>
-                            <option value="">Select Business Type</option>
-                            <option value="TNPD">TNPD</option>
-                            <option value="TNHD">TNHD</option>
-                            <option value="TNRTC">TNRTC</option>
-                            <option value="RHAT">RHAT</option>
-                            <option value="Stark Industries">Stark Industries</option>
-                            <option value="Ghost Wheels">Ghost Wheels</option>
-                            <option value="Elite Motors">Elite Motors</option>
-                            <option value="Star Link Motors">Star Link Motors</option>
-                            <option value="Vintage Dealership">Vintage Dealership</option>
-                            <option value="JDM Dealership">JDM Dealership</option>
-                            <option value="Minibot Inc">Minibot Inc</option>
-                            <option value="Dream Solutions">Dream Solutions</option>
-                            <option value="Vice Club">Vice Club</option>
-                            <option value="TN Mechanics">TN Mechanics</option>
-                            <option value="BrotherHood Customs">BrotherHood Customs</option>
-                            <option value="Whyos Logistics">Whyos Logistics</option>
-                            <option value="MX Logistics">MX Logistics</option>
-                            <option value="BNCFuels">BNCFuels</option>
+                        <label>Advertisement Type <span class="required">*</span></label>
+                        <select id="adType" required onchange="toggleAdNameFields('newspaper')">
+                            <option value="Business">Business</option>
+                            <option value="Community">Community</option>
                         </select>
+                    </div>
+
+                    <div id="businessNameContainer">
+                        <div class="form-group">
+                            <label>Business Name <span class="required">*</span></label>
+                            <select id="businessName" required>
+                                <option value="">Select Business Type</option>
+                                <option value="TNPD">TNPD</option>
+                                <option value="TNHD">TNHD</option>
+                                <option value="TNRTC">TNRTC</option>
+                                <option value="RHAT">RHAT</option>
+                                <option value="Stark Industries">Stark Industries</option>
+                                <option value="Ghost Wheels">Ghost Wheels</option>
+                                <option value="Elite Motors">Elite Motors</option>
+                                <option value="Star Link Motors">Star Link Motors</option>
+                                <option value="Vintage Dealership">Vintage Dealership</option>
+                                <option value="JDM Dealership">JDM Dealership</option>
+                                <option value="Minibot Inc">Minibot Inc</option>
+                                <option value="Dream Solutions">Dream Solutions</option>
+                                <option value="Vice Club">Vice Club</option>
+                                <option value="TN Mechanics">TN Mechanics</option>
+                                <option value="BrotherHood Customs">BrotherHood Customs</option>
+                                <option value="Whyos Logistics">Whyos Logistics</option>
+                                <option value="MX Logistics">MX Logistics</option>
+                                <option value="BNCFuels">BNCFuels</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="communityNameContainer" style="display: none;">
+                        <div class="form-group">
+                            <label>Community Name <span class="required">*</span></label>
+                            <select id="communityName">
+                                <option value="">Select Community</option>
+                                <option value="Grove Street">Grove Street</option>
+                                <option value="Ballas">Ballas</option>
+                                <option value="Vagos">Vagos</option>
+                                <option value="Aztecas">Aztecas</option>
+                                <option value="Marabunta Grande">Marabunta Grande</option>
+                                <option value="The Lost MC">The Lost MC</option>
+                                <option value="Triads">Triads</option>
+                                <option value="Cartel">Cartel</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -192,6 +219,12 @@
                         </ul>
                     </div>
 
+                    <!-- <div class="admin-notice-box"
+                        style="background: rgba(0, 255, 255, 0.1); border: 1px solid #00ffff; padding: 10px; margin-bottom: 20px; border-radius: 5px; color: #00ffff; display: none;"
+                        id="admin-view-notice">
+                        <strong>👨‍💻 Admin View:</strong> You enabled Live Mode. This form is now visible to everyone.
+                    </div> -->
+
                     <form id="billboardForm" onsubmit="submitBillboardAdvertisement(event)">
                         <div class="form-row">
                             <div class="form-group">
@@ -210,28 +243,55 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Business Name <span class="required">*</span></label>
-                            <select id="bb_businessName" required>
-                                <option value="">Select Business Type</option>
-                                <option value="TNPD">TNPD</option>
-                                <option value="TNHD">TNHD</option>
-                                <option value="TNRTC">TNRTC</option>
-                                <option value="RHAT">RHAT</option>
-                                <option value="Stark Industries">Stark Industries</option>
-                                <option value="Ghost Wheels">Ghost Wheels</option>
-                                <option value="Elite Motors">Elite Motors</option>
-                                <option value="Star Link Motors">Star Link Motors</option>
-                                <option value="Vintage Dealership">Vintage Dealership</option>
-                                <option value="JDM Dealership">JDM Dealership</option>
-                                <option value="Minibot Inc">Minibot Inc</option>
-                                <option value="Dream Solutions">Dream Solutions</option>
-                                <option value="Vice Club">Vice Club</option>
-                                <option value="TN Mechanics">TN Mechanics</option>
-                                <option value="BrotherHood Customs">BrotherHood Customs</option>
-                                <option value="Whyos Logistics">Whyos Logistics</option>
-                                <option value="MX Logistics">MX Logistics</option>
-                                <option value="BNCFuels">BNCFuels</option>
+                            <label>Advertisement Type <span class="required">*</span></label>
+                            <select id="bb_adType" required onchange="toggleAdNameFields('billboard')">
+                                <option value="Business">Business</option>
+                                <option value="Community">Community</option>
                             </select>
+                        </div>
+
+                        <div id="bb_businessNameContainer">
+                            <div class="form-group">
+                                <label>Business Name <span class="required">*</span></label>
+                                <select id="bb_businessName" required>
+                                    <option value="">Select Business Type</option>
+                                    <option value="TNPD">TNPD</option>
+                                    <option value="TNHD">TNHD</option>
+                                    <option value="TNRTC">TNRTC</option>
+                                    <option value="RHAT">RHAT</option>
+                                    <option value="Stark Industries">Stark Industries</option>
+                                    <option value="Ghost Wheels">Ghost Wheels</option>
+                                    <option value="Elite Motors">Elite Motors</option>
+                                    <option value="Star Link Motors">Star Link Motors</option>
+                                    <option value="Vintage Dealership">Vintage Dealership</option>
+                                    <option value="JDM Dealership">JDM Dealership</option>
+                                    <option value="Minibot Inc">Minibot Inc</option>
+                                    <option value="Dream Solutions">Dream Solutions</option>
+                                    <option value="Vice Club">Vice Club</option>
+                                    <option value="TN Mechanics">TN Mechanics</option>
+                                    <option value="BrotherHood Customs">BrotherHood Customs</option>
+                                    <option value="Whyos Logistics">Whyos Logistics</option>
+                                    <option value="MX Logistics">MX Logistics</option>
+                                    <option value="BNCFuels">BNCFuels</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="bb_communityNameContainer" style="display: none;">
+                            <div class="form-group">
+                                <label>Community Name <span class="required">*</span></label>
+                                <select id="bb_communityName">
+                                    <option value="">Select Community</option>
+                                    <option value="Grove Street">Grove Street</option>
+                                    <option value="Ballas">Ballas</option>
+                                    <option value="Vagos">Vagos</option>
+                                    <option value="Aztecas">Aztecas</option>
+                                    <option value="Marabunta Grande">Marabunta Grande</option>
+                                    <option value="The Lost MC">The Lost MC</option>
+                                    <option value="Triads">Triads</option>
+                                    <option value="Cartel">Cartel</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -396,14 +456,14 @@
 
                 <!-- Login View -->
                 <div id="admin-login-view" style="text-align: center; margin-top: 20px;">
-                    <p style="margin-bottom: 15px; color: #e0e0e0;">Please enter password to access controls.</p>
-                    <input type="password" id="admin-password-input" placeholder="Enter Password"
+                    <p style="margin-bottom: 15px; color: #e0e0e0;">Please enter your Discord ID to access controls.</p>
+                    <input type="text" id="admin-discord-id-input" placeholder="Enter Discord ID"
                         style="padding: 10px; border-radius: 5px; border: 1px solid #00ffff; background: #000; color: #fff; margin-bottom: 15px; width: 80%;">
                     <br>
-                    <button onclick="checkAdminPassword()" class="option-btn"
+                    <button onclick="checkAdminDiscordId()" class="option-btn"
                         style="padding: 10px 30px; font-size: 14px;">Login</button>
                     <p id="login-error" style="color: #ff0055; margin-top: 10px; font-size: 14px; display: none;">❌
-                        Incorrect Password</p>
+                        Invalid Discord ID</p>
                 </div>
 
                 <!-- Controls View (Hidden by default) -->
