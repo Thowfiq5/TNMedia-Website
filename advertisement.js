@@ -6,7 +6,8 @@ let uploadedImageFile = null;
 
 // Set current year in footer
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    const yearElement = document.getElementById('currentYear');
+    if (yearElement) yearElement.textContent = new Date().getFullYear();
 });
 
 // Navigation functions
@@ -28,8 +29,56 @@ function backToHome() {
     document.getElementById('billboard-page').style.display = 'none';
 
     document.getElementById('advertisementForm').reset();
+    document.getElementById('billboardForm').reset();
+
+    // Reset toggle fields
+    toggleAdNameFields('newspaper');
+    toggleAdNameFields('billboard');
+
     document.getElementById('filePreview').style.display = 'none';
+    document.getElementById('bb_filePreview').style.display = 'none';
     uploadedImageFile = null;
+    uploadedBillboardImage = null;
+}
+
+function toggleAdNameFields(formType) {
+    if (formType === 'newspaper') {
+        const adType = document.getElementById('adType').value;
+        const businessContainer = document.getElementById('businessNameContainer');
+        const communityContainer = document.getElementById('communityNameContainer');
+        const businessSelect = document.getElementById('businessName');
+        const communitySelect = document.getElementById('communityName');
+
+        if (adType === 'Business') {
+            businessContainer.style.display = 'block';
+            communityContainer.style.display = 'none';
+            businessSelect.required = true;
+            communitySelect.required = false;
+        } else {
+            businessContainer.style.display = 'none';
+            communityContainer.style.display = 'block';
+            businessSelect.required = false;
+            communitySelect.required = true;
+        }
+    } else if (formType === 'billboard') {
+        const adType = document.getElementById('bb_adType').value;
+        const businessContainer = document.getElementById('bb_businessNameContainer');
+        const communityContainer = document.getElementById('bb_communityNameContainer');
+        const businessSelect = document.getElementById('bb_businessName');
+        const communitySelect = document.getElementById('bb_communityName');
+
+        if (adType === 'Business') {
+            businessContainer.style.display = 'block';
+            communityContainer.style.display = 'none';
+            businessSelect.required = true;
+            communitySelect.required = false;
+        } else {
+            businessContainer.style.display = 'none';
+            communityContainer.style.display = 'block';
+            businessSelect.required = false;
+            communitySelect.required = true;
+        }
+    }
 }
 
 function handleFileUpload(e) {
@@ -73,13 +122,18 @@ async function submitAdvertisement(e) {
     let newAppId = currentAppId + 1;
     localStorage.setItem('tnma_app_count', newAppId.toString());
 
+    const adType = document.getElementById('adType').value;
+    const businessName = document.getElementById('businessName').value;
+    const communityName = document.getElementById('communityName').value;
+
     const application = {
         id: '#' + newAppId,
         type: 'Newspaper',
+        adType: adType,
         inGameName: document.getElementById('inGameName').value,
         inGamePhone: document.getElementById('inGamePhone').value,
         discordName: document.getElementById('discordName').value,
-        businessName: document.getElementById('businessName').value,
+        selectedName: adType === 'Business' ? businessName : communityName,
         adSize: document.getElementById('adSize').value,
         duration: document.getElementById('duration').value + ' days',
         content: document.getElementById('adContent').value,
@@ -145,13 +199,18 @@ async function submitBillboardAdvertisement(e) {
     let newAppId = currentAppId + 1;
     localStorage.setItem('tnma_app_count', newAppId.toString());
 
+    const adType = document.getElementById('bb_adType').value;
+    const businessName = document.getElementById('bb_businessName').value;
+    const communityName = document.getElementById('bb_communityName').value;
+
     const application = {
         id: '#' + newAppId,
         type: 'Billboard',
+        adType: adType,
         inGameName: document.getElementById('bb_inGameName').value,
         inGamePhone: document.getElementById('bb_inGamePhone').value,
         discordName: document.getElementById('bb_discordName').value,
-        businessName: document.getElementById('bb_businessName').value,
+        selectedName: adType === 'Business' ? businessName : communityName,
         adSize: document.getElementById('bb_adSize').value,
         duration: document.getElementById('bb_duration').value + ' weeks',
         content: document.getElementById('bb_adContent').value,
@@ -203,7 +262,7 @@ function openAdminPanel() {
 function showAdminLogin() {
     document.getElementById('admin-login-view').style.display = 'block';
     document.getElementById('admin-controls-view').style.display = 'none';
-    document.getElementById('admin-password-input').value = '';
+    document.getElementById('admin-discord-id-input').value = '';
     document.getElementById('login-error').style.display = 'none';
 }
 
@@ -213,10 +272,11 @@ function showAdminControls() {
     updateAdminStatusText();
 }
 
-function checkAdminPassword() {
-    const input = document.getElementById('admin-password-input').value;
-    // Simple client-side check. In a real app, this should be server-side.
-    if (input === 'admin') {
+function checkAdminDiscordId() {
+    const input = document.getElementById('admin-discord-id-input').value.trim();
+    const authorizedDiscordId = '841693897183723550';
+    // Check if the entered Discord ID matches the authorized ID
+    if (input === authorizedDiscordId) {
         sessionStorage.setItem('tnma_admin_session', 'true');
         showAdminControls();
     } else {
@@ -237,7 +297,7 @@ function setBillboardState(state) {
     localStorage.setItem('tnma_billboard_state', state);
     checkBillboardState();
     updateAdminStatusText();
-    alert(`Billboard section is now set to: ${state === 'live' ? 'LIVE MODE (Visible to Admin)' : 'COMING SOON'}`);
+    alert(`Billboard section is now set to: ${state === 'live' ? 'LIVE MODE (Visible to Everyone)' : 'COMING SOON'}`);
 }
 
 function updateAdminStatusText() {
@@ -253,13 +313,20 @@ function checkBillboardState() {
     const liveSection = document.getElementById('billboard-live-section');
     const comingSoonSection = document.getElementById('billboard-coming-soon');
     const adminNotice = document.getElementById('admin-view-notice');
+    const isAdminSession = sessionStorage.getItem('tnma_admin_session') === 'true';
 
     if (state === 'live') {
         if (liveSection) liveSection.style.display = 'block';
         if (comingSoonSection) comingSoonSection.style.display = 'none';
 
-        // Show banner that this is admin view
-        if (adminNotice) adminNotice.style.display = 'block';
+        // Show admin notice only if user is logged in as admin
+        if (adminNotice) {
+            if (isAdminSession) {
+                adminNotice.style.display = 'block';
+            } else {
+                adminNotice.style.display = 'none';
+            }
+        }
     } else {
         if (liveSection) liveSection.style.display = 'none';
         if (comingSoonSection) comingSoonSection.style.display = 'block';
@@ -290,10 +357,11 @@ async function sendToDiscord(app, webhookUrl) {
         color: app.type === 'Billboard' ? 3447003 : 65535, // Blue for Billboard, Yellow for Newspaper
         fields: [
             { name: "Application ID", value: app.id, inline: true },
+            { name: "Ad Type", value: app.adType || "Business", inline: true },
             { name: "In-Game Name", value: app.inGameName, inline: true },
             { name: "In-Game Phone", value: app.inGamePhone, inline: true },
             { name: "Discord Name", value: app.discordName, inline: true },
-            { name: "Business Name", value: app.businessName, inline: true },
+            { name: app.adType === 'Community' ? "Community Name" : "Business Name", value: app.selectedName, inline: true },
             { name: "Type / Size", value: app.adSize, inline: true },
             { name: "Duration", value: app.duration, inline: true },
             { name: "Ad Content", value: app.content.length > 500 ? app.content.substring(0, 500) + '...' : app.content, inline: false }
